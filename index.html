@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FaceOnMax V11 Full Project</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:#020406;color:#eef5ff}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Segoe UI",Arial,sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 8% 2%,rgba(0,255,150,.20),transparent 34%),radial-gradient(circle at 95% 28%,rgba(0,130,255,.14),transparent 30%),linear-gradient(180deg,#020406 0%,#050910 55%,#020406 100%)}
+body:after{content:"";position:fixed;inset:0;z-index:-1;opacity:.22;background-image:radial-gradient(rgba(0,255,150,.75) 1px, transparent 1px);background-size:46px 46px}
+.app-shell{max-width:520px;margin:0 auto;padding:78px 14px 34px}
+.menu-toggle{position:fixed;left:14px;top:14px;z-index:50;width:44px;height:44px;border:1px solid rgba(255,255,255,.10);border-radius:16px;background:rgba(9,14,20,.76);color:#fff;font-size:22px;backdrop-filter:blur(18px);box-shadow:0 12px 40px rgba(0,0,0,.35)}
+.sidebar{position:fixed;left:12px;top:66px;width:205px;padding:14px;z-index:40;background:rgba(8,12,18,.96);border:1px solid rgba(0,255,150,.22);border-radius:26px;box-shadow:0 25px 80px rgba(0,0,0,.65);transform:translateX(-235px);transition:.25s ease}
+.menu-open .sidebar{transform:translateX(0)}
+.brand{font-weight:950;font-size:22px;margin:4px 0 14px;letter-spacing:-.04em}.brand span{color:#00ff99}
+.nav{width:100%;border:0;margin:5px 0;padding:12px;border-radius:16px;text-align:left;color:#dce8f5;background:rgba(255,255,255,.055);font-weight:750}
+.nav.active{background:rgba(0,255,150,.13);color:#00ff99}
+.topbar{position:fixed;top:0;left:0;right:0;max-width:520px;margin:auto;height:66px;padding:10px 14px 10px 70px;display:flex;align-items:center;justify-content:space-between;background:rgba(2,4,6,.78);border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(22px);z-index:20}
+.eyebrow{font-size:9px;letter-spacing:.22em;color:#00ff99;font-weight:900}.topbar h1{font-size:22px;line-height:1.05;letter-spacing:-.05em}
+.badge{border:1px solid rgba(0,255,150,.24);background:rgba(0,255,150,.08);color:#00ff99;border-radius:999px;padding:8px 12px;font-size:11px;font-weight:900;letter-spacing:.08em}
+.hero,.drop,.result,.metric-row,.card{background:linear-gradient(180deg,rgba(13,18,27,.90),rgba(7,11,17,.88));border:1px solid rgba(255,255,255,.08);box-shadow:inset 0 1px rgba(255,255,255,.04),0 20px 60px rgba(0,0,0,.32)}
+.hero{border-radius:32px;padding:21px;margin:0 0 14px}.hero .soft{display:inline-block;margin-bottom:13px}.hero h2{font-size:36px;line-height:.95;letter-spacing:-.07em;margin-bottom:10px}.hero p{color:#9aa7b8;font-size:14px;line-height:1.48;max-width:330px}
+.stat-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 0}.stat{padding:12px;border-radius:18px;background:rgba(255,255,255,.045)}.stat b{display:block;color:#00ff99;font-size:22px}.stat span{color:#91a0af;font-size:11px}
+.upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}.drop{height:166px;border-radius:27px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border-style:dashed;border-color:rgba(0,255,150,.30);color:#00ff99;font-weight:950;font-size:14px;letter-spacing:.12em}
+.drop input{display:none}.drop img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}.drop.has img{display:block}.drop.has span{display:none}
+#analyzeBtn{width:100%;height:56px;border:0;border-radius:21px;background:linear-gradient(135deg,#00ff99,#2ac7ff);color:#02100b;font-weight:950;font-size:16px;box-shadow:0 18px 55px rgba(0,255,150,.20)}
+#analyzeBtn:disabled{opacity:.42;filter:grayscale(1)}.hidden{display:none!important}.loader{text-align:center;padding:22px}.ring{width:36px;height:36px;border-radius:50%;border:3px solid rgba(255,255,255,.14);border-top-color:#00ff99;margin:0 auto 11px;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.error{margin:14px 0;padding:14px;border-radius:18px;background:rgba(255,60,80,.12);color:#ff8a99}
+.result{border-radius:27px;padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}.result div{background:rgba(255,255,255,.045);border-radius:18px;padding:12px}.result small{color:#8c9bac;font-size:10px;letter-spacing:.16em;text-transform:uppercase}.result h2{font-size:25px;color:#00ff99;margin-top:4px}
+.metrics,.cards{display:grid;gap:10px}.metric-row{border-radius:18px;padding:12px;display:grid;grid-template-columns:1fr 46px;gap:10px;align-items:center}.metric-row b{font-size:13px}.bar{height:8px;background:rgba(255,255,255,.08);border-radius:999px;margin-top:8px;overflow:hidden}.fill{height:100%;background:#00ff99}.val{font-size:20px;font-weight:950;color:#00ff99}
+.card{border-radius:25px;padding:14px}.scorebox{display:flex;justify-content:space-between;gap:12px}.scorebox h3{font-size:17px}.scorebox b{font-size:24px;color:#00ff99}.card img{width:100%;border-radius:18px;margin:12px 0}.card p,.value,.formula{color:#9aa7b8;font-size:13px;line-height:1.45}.formula{margin-top:8px;color:#00ff99}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <button class="menu-toggle" onclick="document.body.classList.toggle('menu-open')">☰</button>
+  <aside class="sidebar">
+    <div class="brand">Face<span>On</span>Max</div>
+    <button class="nav active">🏠 Главная</button>
+    <button class="nav">📸 Анализ</button>
+    <button class="nav">📊 Метрики</button>
+    <button class="nav">🧬 Формулы</button>
+    <button class="nav">⚙ Настройки</button>
+  </aside>
+  <main>
+    <header class="topbar">
+      <div><div class="eyebrow">BLACK NEON · V11 FULL</div><h1>FaceOnMax</h1></div>
+      <div class="badge">AI PSL</div>
+    </header>
+    <section class="hero">
+      <div class="badge soft">АНФАС + ПРОФИЛЬ</div>
+      <h2>Premium face scan</h2>
+      <p>Загрузи 2 фото. Бот построит неон report, линии лица, категории и итоговый PSL.</p>
+      <div class="stat-strip">
+        <div class="stat"><b>10</b><span>метрик</span></div>
+        <div class="stat"><b>2</b><span>фото</span></div>
+        <div class="stat"><b>PSL</b><span>report</span></div>
+      </div>
+    </section>
+    <section class="upload-grid">
+      <label class="drop" id="frontDrop"><input id="frontInput" type="file" accept="image/*"><img id="frontPreview"><span>+ АНФАС</span></label>
+      <label class="drop" id="profileDrop"><input id="profileInput" type="file" accept="image/*"><img id="profilePreview"><span>+ ПРОФИЛЬ</span></label>
+    </section>
+    <button id="analyzeBtn" disabled>Начать анализ</button>
+    <section id="loader" class="loader hidden"><div class="ring"></div><h3 id="loaderText">Анализ...</h3></section>
+    <section id="errorBox" class="error hidden"></section>
+    <section id="report" class="hidden">
+      <div class="result">
+        <div><small>Рейтинг</small><h2 id="tier"></h2></div>
+        <div><small>PSL</small><h2><span id="score"></span>/10</h2></div>
+        <div><small>Потенциал</small><h2 id="potential"></h2></div>
+        <div><small>Топ</small><h2 id="top"></h2></div>
+      </div>
+      <div id="metrics" class="metrics"></div>
+      <div id="cards" class="cards"></div>
+    </section>
+  </main>
+</div>
+<script>
+const API_URL="http://127.0.0.1:8000";
+const $=id=>document.getElementById(id);
+let frontFile=null,profileFile=null;
+
+function read(f,cb){const r=new FileReader();r.onload=e=>cb(e.target.result);r.readAsDataURL(f)}
+function pick(input,prev,drop,type){const f=input.files[0];if(!f)return;read(f,d=>{prev.src=d;drop.classList.add("has");if(type==="front")frontFile=f;else profileFile=f;$("analyzeBtn").disabled=!(frontFile&&profileFile)})}
+
+$("frontInput").onchange=()=>pick($("frontInput"),$("frontPreview"),$("frontDrop"),"front");
+$("profileInput").onchange=()=>pick($("profileInput"),$("profilePreview"),$("profileDrop"),"profile");
+
+function error(t){$("errorBox").textContent=t;$("errorBox").classList.remove("hidden")}
+function render(data){
+ $("tier").textContent=data.tier;
+ $("score").textContent=data.psl_score;
+ $("potential").textContent=`${data.potential_tier} ${data.potential}`;
+ $("top").textContent=`${data.top_percent}%`;
+
+ const metrics=$("metrics");metrics.innerHTML="";
+ data.categories.forEach(c=>{
+   const row=document.createElement("div");
+   row.className="metric-row";
+   row.innerHTML=`<div><b>${c.title}</b><div class="bar"><div class="fill" style="width:${c.score*10}%"></div></div></div><div class="val">${c.score}</div>`;
+   metrics.appendChild(row)
+ });
+
+ const cards=$("cards");cards.innerHTML="";
+ data.categories.forEach((c,i)=>{
+   const el=document.createElement("div");
+   el.className="card";
+   el.innerHTML=`<div class="scorebox"><h3>${i+1}. ${c.title}</h3><b>${c.score}</b></div><img src="${API_URL+c.image_url}"><p>${c.desc}</p><div class="value">${c.value}</div><div class="formula">${c.formula}</div>`;
+   cards.appendChild(el)
+ });
+ $("report").classList.remove("hidden");
+ window.scrollTo({top:$("report").offsetTop-20,behavior:"smooth"})
+}
+
+$("analyzeBtn").onclick=async()=>{
+ $("loader").classList.remove("hidden");$("errorBox").classList.add("hidden");$("report").classList.add("hidden");
+ try{
+   for(const t of["Ищу лицо, не картинку...","Строю FaceMesh...","Считаю ratios лица...","Рисую линии на секциях..."]){
+     $("loaderText").textContent=t;
+     await new Promise(r=>setTimeout(r,350))
+   }
+   const form=new FormData();form.append("front",frontFile);form.append("profile",profileFile);
+   const res=await fetch(`${API_URL}/analyze`,{method:"POST",body:form});
+   const data=await res.json();
+   if(!data.ok){error(data.error||"Ошибка анализа");return}
+   render(data)
+ }catch(e){error("Backend не запущен. Запусти backend/main.py и попробуй снова.")}
+ finally{$("loader").classList.add("hidden")}
+};
+</script>
+</body>
+</html>
